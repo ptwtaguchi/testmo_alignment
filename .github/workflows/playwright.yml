@@ -30,10 +30,11 @@ jobs:
         pip install -r requirements.txt
 
     - name: Ensure browsers are installed
-      run: python -m playwright install --with-deps ${{ matrix.browser }}
+      run: |
+        python -m playwright install --with-deps
 
-    # Install Testmo CLI tool locally (then use npx testmo .. to run it)
-    - run: npm install --no-save @testmo/testmo-cli
+    - name: Install Testmo CLI tool locally (then use npx testmo .. to run it)
+      run: npm install --no-save @testmo/testmo-cli
 
     - name: Run your tests
       run: |
@@ -67,15 +68,16 @@ jobs:
         TESTMO_URL: ${{ secrets.TESTMO_URL }}
         TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
 
-    
-    # report results to Testmo
     - name: report results to Testmo (Windows)
       if: runner.os == 'Windows'
       run: |
-          testmo automation:run:submit --instance "$TESTMO_URL" --project-id 1 --name CICD-${{ matrix.os }}_${{ matrix.browser }} --source "functiontest" --results results/*.xml
+        npx testmo automation:run:submit \
+          --instance "$TESTMO_URL" \
+          --project-id 1 \
+          --name CICD-${{ matrix.os }}_${{ matrix.browser }} \
+          --source "functiontest" \
+          --results test-results/*.xml
       shell: pwsh
       env:
         TESTMO_URL: ${{ secrets.TESTMO_URL }}
         TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
-
-  
