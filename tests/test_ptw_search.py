@@ -6,19 +6,33 @@ def test_google_search_for_ptw():
         browser = p.chromium.launch()
         page = browser.new_page()
         page.goto("https://www.google.com")
+        
+        # クッキー同意ポップアップを処理
+        try:
+            page.click("button:has-text('同意する')")
+        except:
+            pass  # ボタンが見つからなければ無視
+        
+        # 検索ボックスが表示されるまで待機
         page.wait_for_selector('textarea.gLFyf')
         page.fill('textarea.gLFyf', 'PTW')
         page.press('textarea.gLFyf', 'Enter')
         page.wait_for_load_state("networkidle")
         
-        # 追加: 検索結果が読み込まれるまでの待機時間を追加
-        page.wait_for_timeout(5000)
+        # ログインプロンプトが出る可能性に対応
+        try:
+            page.click('button[aria-label="ログインしない"]')
+        except:
+            pass  # ボタンが見つからなければ無視
+
+        # 検索結果が表示されるまで待機
+        page.wait_for_selector('div.yuRUbf', timeout=10000)
         
         html = page.content()
         soup = BeautifulSoup(html, 'html.parser')
         search_results = soup.find_all('div', {'class': 'yuRUbf'})
         
-        # 追加: デバッグ情報として検索結果を出力
+        # デバッグ情報として検索結果を出力
         print("Search results:")
         for result in search_results:
             print(result.text)
