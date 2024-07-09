@@ -1,0 +1,13 @@
+# pytest for running tests
+pytest
+
+# Playwright for browser automation
+playwright
+
+# pytest-playwright for integrating Playwright with pytest
+pytest-playwright
+
+# Additional dependencies (if needed)
+# requests
+# numpy
+beautifulsoup4
