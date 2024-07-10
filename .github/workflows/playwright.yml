@@ -98,7 +98,7 @@ jobs:
     - name: report results to Testmo (Windows)
       if: runner.os == 'Windows'
       run: |
-        npx testmo automation:run:submit --instance "$TESTMO_URL" --project-id 1 --name CICD-${{ matrix.os }}_${{ matrix.browser }} --source "functiontest" --results test-results/*.xml
+        npx testmo automation:run:submit --instance "$env:TESTMO_URL" --project-id 1 --name CICD-${{ matrix.os }}_${{ matrix.browser }} --source "functiontest" --results test-results/*.xml
       shell: pwsh
       env:
         TESTMO_URL: ${{ secrets.TESTMO_URL }}
