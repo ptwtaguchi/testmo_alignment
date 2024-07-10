@@ -19,8 +19,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
     - name: Set up Python
-      uses: actions/setup-python@v4.7.0  # 最新バージョンを指定
+      uses: actions/setup-python@v4.7.0
       with:
         python-version: '3.12'
 
@@ -38,7 +43,7 @@ jobs:
     - name: Run your tests
       run: |
         mkdir -p test-results
-        pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
+        xvfb-run -a pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
         if [ ! -f test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml ]; then
           echo "Test results file not found!"
           exit 1
