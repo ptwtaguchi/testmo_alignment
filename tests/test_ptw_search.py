@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 def test_google_search_for_ptw():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)  # ヘッドレスモードをFalseに設定
+        browser = p.chromium.launch(headless=True)  # デバッグ時はヘッドレスモードをFalseに設定
         context = browser.new_context(locale='ja-JP')  # ブラウザの言語を日本語に設定
         page = context.new_page()
         page.goto("https://www.google.com")
