@@ -10,7 +10,7 @@ def test_google_search_for_ptw():
 
         # 検索ボックスが表示されるまで待機
         page.wait_for_selector('textarea.gLFyf')
-        page.fill('textarea.gLFyf', 'PTW')
+        page.fill('textarea.gLFyf', 'ポールトゥウィン')
         page.press('textarea.gLFyf', 'Enter')
         page.wait_for_load_state("networkidle")
 
@@ -27,4 +27,4 @@ def test_google_search_for_ptw():
             print(result.text)
 
         browser.close()
-        assert any('PTW' in result.text for result in search_results)
+        assert any('ポールトゥウィン株式会社' in result.text for result in search_results)
