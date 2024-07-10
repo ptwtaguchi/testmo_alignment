@@ -38,10 +38,11 @@ jobs:
     - name: Run your tests
       run: |
         mkdir -p test-results
-        pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure 
+        pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
         if [ ! -f test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml ]; then
           echo "Test results file not found!"
           exit 1
+        fi
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
