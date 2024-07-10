@@ -11,3 +11,4 @@ pytest-playwright
 # requests
 # numpy
 beautifulsoup4
+pytest-rerunfailures
