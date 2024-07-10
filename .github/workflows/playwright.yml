@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         browser: [chromium, firefox, webkit]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     
     steps:
@@ -35,7 +35,12 @@ jobs:
         pip install -r requirements.txt
 
     - name: Ensure browsers are installed
-      run: python -m playwright install --with-deps
+      run: |
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          python -m playwright install
+        else
+          python -m playwright install --with-deps
+        fi
 
     - name: Install Testmo CLI tool locally (then use npx testmo .. to run it)
       run: npm install --no-save @testmo/testmo-cli
@@ -43,7 +48,11 @@ jobs:
     - name: Run your tests
       run: |
         mkdir -p test-results
-        xvfb-run -a pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
+        else
+          xvfb-run -a pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
+        fi
         if [ ! -f test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml ]; then
           echo "Test results file not found!"
           exit 1
