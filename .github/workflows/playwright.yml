@@ -30,7 +30,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Ensure browsers are installed
-      run: python -m playwright install --with-deps
+      run: python -m playwright install ${{ matrix.browser }}
 
     - name: Install Testmo CLI tool locally (then use npx testmo .. to run it)
       run: npm install --no-save @testmo/testmo-cli
@@ -42,7 +42,6 @@ jobs:
         if [ ! -f test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml ]; then
           echo "Test results file not found!"
           exit 1
-        fi
 
     - name: Upload test results
       uses: actions/upload-artifact@v4

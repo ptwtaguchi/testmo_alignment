@@ -3,27 +3,28 @@ from bs4 import BeautifulSoup
 
 def test_google_search_for_ptw():
     with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
+        browser = p.chromium.launch(headless=True)  # ヘッドレスモードをFalseに設定
+        context = browser.new_context(locale='ja-JP')  # ブラウザの言語を日本語に設定
+        page = context.new_page()
         page.goto("https://www.google.com")
         
-        # クッキー同意ポップアップを処理
-        try:
-            page.click("button:has-text('同意する')")
-        except:
-            pass  # ボタンが見つからなければ無視
+        # # クッキー同意ポップアップを処理
+        # try:
+        #     page.click("button:has-text('同意する')")
+        # except:
+        #     pass  # ボタンが見つからなければ無視
         
+        # # ログインプロンプトが出る可能性に対応
+        # try:
+        #     page.click('button[aria-label="ログインしない"]')
+        # except:
+        #     pass  # ボタンが見つからなければ無視
+
         # 検索ボックスが表示されるまで待機
         page.wait_for_selector('textarea.gLFyf')
         page.fill('textarea.gLFyf', 'PTW')
         page.press('textarea.gLFyf', 'Enter')
         page.wait_for_load_state("networkidle")
-        
-        # ログインプロンプトが出る可能性に対応
-        try:
-            page.click('button[aria-label="ログインしない"]')
-        except:
-            pass  # ボタンが見つからなければ無視
 
         # 検索結果が表示されるまで待機
         page.wait_for_selector('div.yuRUbf', timeout=10000)
