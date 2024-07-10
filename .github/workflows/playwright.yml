@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        browser: [chromium]
+        browser: [chromium, firefox, webkit]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     
@@ -47,7 +47,6 @@ jobs:
         if [ ! -f test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml ]; then
           echo "Test results file not found!"
           exit 1
-        fi
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
