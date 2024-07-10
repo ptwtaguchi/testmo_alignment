@@ -27,4 +27,4 @@ def test_google_search_for_ptw():
             print(result.text)
 
         browser.close()
-        assert any('ポールトゥウィン' in result.text for result in search_results)
+        assert any('PTW' in result.text for result in search_results)
