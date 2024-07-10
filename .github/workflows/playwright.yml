@@ -36,27 +36,37 @@ jobs:
 
     - name: Ensure browsers are installed
       run: |
-        if [ "${{ matrix.os }}" == "windows-latest" ]; then
-          python -m playwright install
-        else
+        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
           python -m playwright install --with-deps
+        else
+          python -m playwright install
         fi
+      shell: bash
 
     - name: Install Testmo CLI tool locally (then use npx testmo .. to run it)
       run: npm install --no-save @testmo/testmo-cli
 
-    - name: Run your tests
+    - name: Run your tests (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         mkdir -p test-results
-        if [ "${{ matrix.os }}" == "windows-latest" ]; then
-          pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
-        else
-          xvfb-run -a pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
-        fi
+        xvfb-run -a pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
         if [ ! -f test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml ]; then
           echo "Test results file not found!"
           exit 1
         fi
+      shell: bash
+
+    - name: Run your tests (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        mkdir -p test-results
+        pytest --maxfail=1 --reruns 3 --reruns-delay 5 --browser ${{ matrix.browser }} --junitxml=test-results/${{ matrix.os }}_${{ matrix.browser }}_results.xml --tracing=retain-on-failure
+        if (-Not (Test-Path "test-results\${{ matrix.os }}_${{ matrix.browser }}_results.xml")) {
+          Write-Error "Test results file not found!"
+          exit 1
+        }
+      shell: pwsh
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
