@@ -28,3 +28,5 @@ def test_google_search_for_ptw():
 
         browser.close()
         assert any('ポールトゥウィン株式会社' in result.text for result in search_results)
+
+        # hoge
